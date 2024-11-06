@@ -25,10 +25,10 @@
 
         <!-- Secondary Navbar items -->
         <div class="hidden md:flex items-center space-x-3 ">
-          <a href="" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300">Log In</a>
-          <a href="" class="py-2 px-2 font-medium text-white bg-pink-500 rounded hover:bg-green-400 transition duration-300">Sign Up</a>
+          <a href="/auth/login" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300">Log In</a>
+          <a href="/auth/login" class="py-2 px-2 font-medium text-white bg-pink-500 rounded hover:bg-green-400 transition duration-300">Sign Up</a>
         </div>
-
+  
         <!-- Mobile menu button -->
         <div class="md:hidden flex items-center">
           <button class="outline-none mobile-menu-button">

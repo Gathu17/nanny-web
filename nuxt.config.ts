@@ -13,5 +13,8 @@ export default defineNuxtConfig({
     },
   },
   srcDir: "src/",
+  router: {
+    middleware: 'redirect',
+  },
   ssr: false
 })
