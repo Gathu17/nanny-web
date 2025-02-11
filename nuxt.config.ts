@@ -10,6 +10,7 @@ export default defineNuxtConfig({
 
   components: [
     { path: "~/components/presentational", global: true },
+    { path: "~/components/", global: true },
   ],
 
   postcss: {
@@ -21,9 +22,9 @@ export default defineNuxtConfig({
 
   srcDir: "src/",
 
-  router: {
-    middleware: 'redirect',
-  },
+  // router: {
+  //   middleware: 'redirect',
+  // },
   ssr: false,
   compatibilityDate: "2024-11-21"
 })
