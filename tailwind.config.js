@@ -18,6 +18,7 @@ export default {
     extend: {
       colors: {
         purple: '#640D5F',
+        pink: '#EC4899',
       }
     },
     screens: {
