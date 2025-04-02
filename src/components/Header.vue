@@ -8,9 +8,9 @@
         <!-- Logo -->
         <div class="flex space-x-7">
           <div>
-            <a href="#" class="flex items-center py-4 px-2">
-              <img src="https://via.placeholder.com/40" alt="Logo" class="h-8 w-8 mr-2">
-              <span class="font-semibold text-gray-500 text-lg">Nanny App</span>
+            <a href="#" class="flex items-center  px-2">
+              <img src="@/assets/images/nanny-logo.png" alt="Logo" class="h-20 w-48 mr-2">
+              <!-- <span class="font-semibold text-gray-500 text-lg">NannyMatch</span> -->
             </a>
           </div>
         </div>
@@ -26,7 +26,7 @@
         <!-- Secondary Navbar items -->
         <div class="hidden md:flex items-center space-x-3 ">
           <a href="/auth/login" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300">Log In</a>
-          <a href="/auth/login" class="py-2 px-2 font-medium text-white bg-pink-500 rounded hover:bg-green-400 transition duration-300">Sign Up</a>
+          <a href="/auth/login" class="py-2 px-2 font-medium text-white bg-pink rounded hover:bg-green-400 transition duration-300">Sign Up</a>
         </div>
   
         <!-- Mobile menu button -->

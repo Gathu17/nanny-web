@@ -54,7 +54,7 @@
           <button 
             type="submit"
             :disabled="loading"
-            class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 focus:ring-4 focus:ring-blue-200 transition-all duration-200 relative overflow-hidden"
+            class="w-full bg-pink/80 text-white py-3 rounded-lg hover:bg-pink focus:ring-4 focus:ring-blue-200 transition-all duration-200 relative overflow-hidden"
           >
             <span :class="{ 'opacity-0': loading }">Sign In</span>
             <div v-if="loading" class="absolute inset-0 flex items-center justify-center">
@@ -74,8 +74,9 @@
   </template>
   
 <script setup lang="ts">
-import { PropType, ref, reactive , computed, watch} from 'vue'
-   
+import { ref, reactive , computed, watch} from 'vue'
+import { useRouter } from 'vue-router'
+
     export interface LoginInput {
         email: string
         password: string
@@ -90,7 +91,8 @@ import { PropType, ref, reactive , computed, watch} from 'vue'
     const passwordError = ref<string>('')
     const showPassword = ref<boolean>(false)
     const loading = ref<boolean>(false)
-
+    const router = useRouter()
+    
       const validateEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         // if (!this.email) {
@@ -117,6 +119,11 @@ import { PropType, ref, reactive , computed, watch} from 'vue'
         // return true
       }
       async function handleSubmit() {
+        if(state.email === 'admin@gmail.com' && state.password === 'admin'){
+            router.push('/client/dashboard')
+        }else{
+           router.push('/nanny/dashboard')
+        }
         // const isEmailValid = this.validateEmail()
         // const isPasswordValid = this.validatePassword()
   

@@ -6,15 +6,13 @@
           <!-- Logo -->
           <div class="flex space-x-7">
             <div>
-              <a href="#" class="flex items-center py-4 px-2">
-                <img
-                  src="https://via.placeholder.com/40"
-                  alt="Logo"
-                  class="h-8 w-8 mr-2"
-                />
-                <span class="font-semibold text-gray-500 text-lg"
+              <a href="#" class="flex items-center  px-2">
+                <img src="@/assets/images/nanny-logo.png" alt="Logo" class="h-20 w-48 mr-2">
+                <!-- <span class="font-semibold text-gray-500 text-lg"
                   >Nanny App</span
-                >
+                > -->
+                <div>
+          </div>
               </a>
             </div>
           </div>
