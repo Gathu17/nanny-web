@@ -4,12 +4,12 @@
       <img src="@/assets/images/hero-img.jpg" class="w-[100vw] opacity-85" />
       <div class="absolute bottom-20 lg:bottom-30 xl:bottom-40 left-1 lg:left-10  flex sm:right-2">
         <button
-          class="relative w-[12rem] h-[50px] sm:w-[200px] font-bold mx-3 bg-pink-500 hover:bg-pink-200"
+          class="relative w-[12rem] h-[50px] sm:w-[200px] font-bold mx-3 bg-pink hover:bg-pink/80"
         >
           Find Child Care
         </button>
         <button
-          class="relative h-[50px] w-[8rem] sm:w-[200px] font-bold bg-gray-200 hover:bg-gray-500"
+          class="relative h-[50px] w-[8rem] sm:w-[200px] font-bold bg-gray-200 hover:bg-gray-300"
         >
           I am a sitter
         </button>
@@ -60,7 +60,7 @@
           </li>
         </ul>
       </div>
-      <div class="bg-pink-200 h-[40rem] flex">
+      <div class="bg-pink h-[40rem] flex">
         <img src="@/assets/images/hero-img2.jpg" class="h-full w-1/2 md-block lg:block aspect-square hidden"/>
         <div class="flex-1 p-5">
           <h1 class="text-center text-4xl font-caponi mb-5">We make finding the right care easier</h1>
@@ -102,7 +102,7 @@
       <div class="float-right md:mr-10  w-[50%] mt-10">
         <p class="text-3xl font-bold sm:text-xl">Find the care you need from someone you trust</p> 
         <div class="flex">
-          <button class="bg-pink-500 mt-10 p-4 mr-4">Post a Job</button>
+          <button class="bg-pink mt-10 p-4 mr-4">Post a Job</button>
           <button class="border b-3 mt-10 p-4 sm:mr-2">I'm a Nanny</button>
         </div>
       </div>

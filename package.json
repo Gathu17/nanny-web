@@ -16,8 +16,10 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "nuxt": "^3.13.0",
+    "pinia": "^3.0.1",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "vue3-google-map": "^0.21.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
