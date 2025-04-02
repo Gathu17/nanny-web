@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-hidden">
-    <nav class="bg-white shadow-lg h-[10vh] w-full">
-      <div class="max-w-6xl shadow-md pl-4">
+    <nav class="bg-white shadow-lg h-[8vh] w-full">
+      <div class="max-w-6xl pl-4">
         <div class="flex justify-between">
           <!-- Logo -->
           <div class="flex space-x-7">
@@ -19,32 +19,18 @@
             </div>
           </div>
 
-          <!-- Primary Navbar items -->
-          <!-- <div class="hidden md:flex items-center space-x-1">
-          <a href="#" class="py-4 px-2 text-green-500 border-b-4 border-green-500 font-semibold">Home</a>
-          <a href="#" class="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">About</a>
-          <a href="#" class="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">Services</a>
-          <a href="#" class="py-4 px-2 text-gray-500 font-semibold hover:text-green-500 transition duration-300">Contact</a>
-        </div> -->
-
-          <!-- Secondary Navbar items -->
-          <!-- <div class="hidden md:flex items-center space-x-3">
-            <a
-              href="/auth/login"
-              class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-gray-200 transition duration-300"
-              >Log In</a
-            >
-            <a
-              href="/auth/login"
-              class="py-2 px-2 font-medium text-white bg-pink-500 rounded hover:bg-green-400 transition duration-300"
-              >Sign Up</a
-            >
-          </div> -->
+        
           <ul class="flex justify-around items-center w-[60%] mx-auo space-x-4 mr-10">
-            <li class="mr-2 hover:text-pink-400 cursor-pointer">Home</li>
-            <li class="mr-2 whitespace-nowrap hover:text-pink-400 cursor-pointer">Find a Job</li>
-            <li class="mr-2 hover:text-pink-400 cursor-pointer">Messages</li>
-            <!-- <li class="rounded border w-[50%] pl-2 focus:border-pink-400">Search <span class="float-right pr-2">🔍</span></li> -->
+            <li class="mr-2 whitespace-nowrap cursor-pointer">
+              <NuxtLink to="/nanny/dashboard" class="hover:text-pink-400" :class="{ 'text-pink-400': route.path == '/nanny/dashboard' }">Find a Job</NuxtLink>
+            </li>
+            <li class="mr-2 cursor-pointer">
+              <NuxtLink to="/nanny/bookings" class="hover:text-pink-400" :class="{ 'text-pink-400': $route.path === '/nanny/bookings' }">Bookings</NuxtLink>
+            </li>
+            <li class="mr-2 cursor-pointer">
+              <NuxtLink to="/nanny/messages" class="hover:text-pink-400" :class="{ 'text-pink-400': $route.path === '/nanny/messages' }">Messages</NuxtLink>
+            </li>
+           
             <input
             type="text"
             placeholder="🔍 Search"
@@ -85,4 +71,7 @@
     <slot />
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import {useRoute} from 'vue-router'
+const route = useRoute()
+</script>
