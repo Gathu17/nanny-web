@@ -20,13 +20,13 @@
         
           <ul class="flex justify-around items-center w-[60%] mx-auo space-x-4 mr-10">
             <li class="mr-2 whitespace-nowrap cursor-pointer">
-              <NuxtLink to="/nanny/dashboard" class="hover:text-pink-400" :class="{ 'text-pink-400': route.path == '/nanny/dashboard' }">Find a Job</NuxtLink>
+              <NuxtLink to="/nanny/dashboard" class="hover:text-pink" :class="{ 'text-pink': route.path == '/nanny/dashboard' }">Find a Job</NuxtLink>
             </li>
             <li class="mr-2 cursor-pointer">
-              <NuxtLink to="/nanny/bookings" class="hover:text-pink-400" :class="{ 'text-pink-400': $route.path === '/nanny/bookings' }">Bookings</NuxtLink>
+              <NuxtLink to="/nanny/bookings" class="hover:text-pink" :class="{ 'text-pink': $route.path === '/nanny/bookings' }">Bookings</NuxtLink>
             </li>
             <li class="mr-2 cursor-pointer">
-              <NuxtLink to="/nanny/messages" class="hover:text-pink-400" :class="{ 'text-pink-400': $route.path === '/nanny/messages' }">Messages</NuxtLink>
+              <NuxtLink to="/nanny/messages" class="hover:text-pink" :class="{ 'text-pink': $route.path === '/nanny/messages' }">Messages</NuxtLink>
             </li>
            
             <input
@@ -39,10 +39,21 @@
               class="w-[10%] mr-5 ml-10"
             />
             <div class="1">
-            <font-awesome-icon
-              :icon="['fas', 'user']"
-              class="w-[25%] ml-5 rounded-full bg-gray-200 hover:bg-gray-300 p-2"
-            />
+            <div class="relative">
+              <font-awesome-icon
+                @click="toggleDropdown"
+                :icon="['fas', 'user']"
+                class="w-[25%] ml-5 rounded-full bg-gray-200 hover:bg-gray-300 p-2 cursor-pointer"
+              />
+              <div v-if="showDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <NuxtLink to="/nanny/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  My Profile
+                </NuxtLink>
+                <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Logout
+                </button>
+              </div>
+            </div>
             </div>
           </ul>
 
@@ -72,4 +83,29 @@
 <script lang="ts" setup>
 import {useRoute} from 'vue-router'
 const route = useRoute()
+const showDropdown = ref(false)
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value
+}
+
+const logout = () => {
+  // TODO: Implement logout logic
+  navigateTo('/login')
+}
+
+// Close dropdown when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    const dropdown = document.querySelector('.relative')
+    if (dropdown && !dropdown.contains(e.target as Node)) {
+      showDropdown.value = false
+    }
+  })
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', () => {})
+})
+
 </script>
