@@ -25,6 +25,14 @@ export default defineNuxtConfig({
   // router: {
   //   middleware: 'redirect',
   // },
+  routeRules: {
+    "/": {
+      redirect: "/welcome",
+    },
+    "/home": {
+      redirect: "/welcome",
+    },
+  },
   ssr: false,
   compatibilityDate: "2024-11-21"
 })
