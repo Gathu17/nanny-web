@@ -66,7 +66,7 @@
         <div class="mt-6 text-center">
           <p class="text-gray-600">
             Don't have an account? 
-            <a href="#" class="text-blue-500 hover:text-blue-600 transition-colors">Sign up</a>
+            <a href="/auth/signup" class="text-blue-500 hover:text-blue-600 transition-colors">Sign up</a>
           </p>
         </div>
       </div>
@@ -76,6 +76,7 @@
 <script setup lang="ts">
 import { ref, reactive , computed, watch} from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
     export interface LoginInput {
         email: string
@@ -92,6 +93,11 @@ import { useRouter } from 'vue-router'
     const showPassword = ref<boolean>(false)
     const loading = ref<boolean>(false)
     const router = useRouter()
+    const authStore = useAuthStore()
+    onMounted(() => {
+      
+    })
+    // 
     
       const validateEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -119,11 +125,18 @@ import { useRouter } from 'vue-router'
         // return true
       }
       async function handleSubmit() {
-        if(state.email === 'admin@gmail.com' && state.password === 'admin'){
+        authStore.login(state).then(() => {
+          if (authStore.isClient) {
             router.push('/client/dashboard')
-        }else{
-           router.push('/nanny/dashboard')
-        }
+          } else if (authStore.isNanny) {
+            router.push('/nanny/dashboard')
+          }
+        })
+        // if(state.email === 'admin@gmail.com' && state.password === 'admin'){
+        //     router.push('/client/dashboard')
+        // }else{
+        //    router.push('/nanny/dashboard')
+        // }
         // const isEmailValid = this.validateEmail()
         // const isPasswordValid = this.validatePassword()
   

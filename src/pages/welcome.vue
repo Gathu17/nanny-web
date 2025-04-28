@@ -102,7 +102,7 @@
       <div class="float-right md:mr-10  w-[50%] mt-10">
         <p class="text-3xl font-bold sm:text-xl">Find the care you need from someone you trust</p> 
         <div class="flex">
-          <button class="bg-pink mt-10 p-4 mr-4">Post a Job</button>
+          <button class="bg-pink mt-10 p-4 mr-4">Find Child Care</button>
           <button class="border b-3 mt-10 p-4 sm:mr-2">I'm a Nanny</button>
         </div>
       </div>

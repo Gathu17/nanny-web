@@ -2,6 +2,20 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  modules: [
+    '@pinia/nuxt',
+    ['@vee-validate/nuxt',{
+      autoImports: true,
+    }],
+  ],
+
+  pinia: {
+    autoImports: [
+      'defineStore',
+      ['defineStore', 'definePiniaStore'],
+    ]
+  },
+
   css: ['~/assets/main.css'],
 
   plugins: [
@@ -22,15 +36,18 @@ export default defineNuxtConfig({
 
   srcDir: "src/",
 
-  // router: {
-  //   middleware: 'redirect',
-  // },
   routeRules: {
     "/": {
       redirect: "/welcome",
     },
     "/home": {
       redirect: "/welcome",
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.API_URL || 'http://localhost:3000/api'
     },
   },
   ssr: false,
