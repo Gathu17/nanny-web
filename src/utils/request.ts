@@ -32,7 +32,7 @@ request.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized access
       localStorage.removeItem('auth_token');
-      window.location.href = '/auth/login';
+      // window.location.href = '/auth/login';
     }
     if(error.response?.data?.message){
       throw new Error(error.response?.data?.message);

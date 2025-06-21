@@ -19,6 +19,7 @@ export default {
       colors: {
         purple: '#640D5F',
         pink: '#EC4899',
+        primary: '#FF6B6B'
       }
     },
     screens: {

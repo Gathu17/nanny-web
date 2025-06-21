@@ -62,7 +62,7 @@
             </div>
           </button>
         </form>
-  
+       
         <div class="mt-6 text-center">
           <p class="text-gray-600">
             Don't have an account? 
@@ -94,10 +94,7 @@ import { useAuthStore } from '@/stores/auth'
     const loading = ref<boolean>(false)
     const router = useRouter()
     const authStore = useAuthStore()
-    onMounted(() => {
-      
-    })
-    // 
+ 
     
       const validateEmail = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -127,6 +124,7 @@ import { useAuthStore } from '@/stores/auth'
       async function handleSubmit() {
         authStore.login(state).then(() => {
           if (authStore.isClient) {
+           
             router.push('/client/dashboard')
           } else if (authStore.isNanny) {
             router.push('/nanny/dashboard')

@@ -90,8 +90,7 @@
             </Field>
           </div>
         </div>
-{{ console.log(isValidating)
- }}
+
         <div class="flex items-center justify-between">
           <label class="flex items-center">
             <Field
@@ -140,10 +139,10 @@ const authStore = useAuthStore()
 
 const userType = computed({
   get() {
-    return route.query.userType ?? ''
+    return route.query.role ?? ''
   },
-  set(userType) {
-    router.replace({ query: { userType } })
+  set(role) {
+    router.replace({ query: { role } })
   }
 })
 
@@ -183,9 +182,14 @@ async function handleSubmit(values: any) {
   const {confirmPassword, ...data} = values;
   
   data['userType'] = userType.value
+
   const result = await authStore.signup(data);
   if (result) {
-      router.push('/auth/login')
+    if(authStore.user.userType == "nanny"){
+      navigateTo('/nanny/onboarding')
+    } else {
+      navigateTo('/client/dashboard')
+    }
     } else {
       // Handle signup failure
       console.error('Signup failed:', authStore.error);

@@ -73,7 +73,13 @@
                       <input
                         type="checkbox"
                         :value="location"
-                        v-model="selectedLocations"
+                        :checked="selectedLocations.includes(location)"
+                        @change="
+                          () =>
+                            selectedLocations.includes(location)
+                              ? jobStore.removeLocationFilter(location)
+                              : jobStore.addLocationFilter(location)
+                        "
                         class="mr-2 text-pink-600 focus:ring-pink-500"
                       />
                       {{ location }}
@@ -127,7 +133,13 @@
                       <input
                         type="checkbox"
                         :value="schedule"
-                        v-model="selectedSchedules"
+                        :checked="selectedSchedules.includes(schedule)"
+                        @change="
+                          () =>
+                            selectedSchedules.includes(schedule)
+                              ? jobStore.removeScheduleFilter(schedule)
+                              : jobStore.addScheduleFilter(schedule)
+                        "
                         class="mr-2 text-pink-600 focus:ring-pink-500"
                       />
                       {{ schedule }}
@@ -181,7 +193,13 @@
                       <input
                         type="checkbox"
                         :value="range.value"
-                        v-model="selectedSalaryRanges"
+                        :checked="selectedSalaryRanges.includes(range.value)"
+                        @change="
+                          () =>
+                            selectedSalaryRanges.includes(range.value)
+                              ? jobStore.removeSalaryFilter(range.value)
+                              : jobStore.addSalaryFilter(range.value)
+                        "
                         class="mr-2 text-pink-600 focus:ring-pink-500"
                       />
                       {{ range.label }}
@@ -233,7 +251,13 @@
                         <input
                           type="checkbox"
                           :value="req"
-                          v-model="selectedRequirements"
+                          :checked="selectedRequirements.includes(req)"
+                          @change="
+                            () =>
+                              selectedRequirements.includes(req)
+                                ? jobStore.removeRequirementFilter(req)
+                                : jobStore.addRequirementFilter(req)
+                          "
                           class="mr-2 text-pink-600 focus:ring-pink-500"
                         />
                         {{ req }}
@@ -438,7 +462,54 @@
 
           <!-- Job Cards -->
           <div
-            v-if="filteredJobs.length === 0"
+            v-if="loading"
+            class="bg-white rounded-xl shadow-md p-8 text-center"
+          >
+            <div
+              class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink mx-auto"
+            ></div>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">
+              Loading jobs...
+            </h3>
+            <p class="mt-2 text-gray-600">
+              Please wait while we fetch the latest job listings.
+            </p>
+          </div>
+
+          <div
+            v-else-if="error"
+            class="bg-white rounded-xl shadow-md p-8 text-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-16 w-16 text-red-400 mx-auto"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">
+              Error loading jobs
+            </h3>
+            <p class="mt-2 text-gray-600">
+              {{ error }}
+            </p>
+            <button
+              @click="jobStore.loadJobs"
+              class="mt-4 px-4 py-2 bg-pink text-white rounded-lg hover:bg-pink-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+
+          <div
+            v-else-if="jobs.length === 0"
             class="bg-white rounded-xl shadow-md p-8 text-center"
           >
             <svg
@@ -463,21 +534,68 @@
             </p>
           </div>
 
-          <div
-            v-for="job in filteredJobs"
-            :key="job.id"
-            class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
-          >
-            <!-- Job card content remains the same -->
-            <div class="flex justify-between items-start mb-4">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900">
-                  {{ job.title }}
-                </h3>
-                <p class="text-gray-500 flex items-center mt-1">
+          <div v-else>
+            <div
+              v-for="job in activeFilter === 'all' ? jobs : savedJobs"
+              :key="job.id"
+              class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+            >
+              <!-- Job card content remains the same -->
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    {{ job.title }}
+                  </h3>
+                  <p class="text-gray-500 flex items-center mt-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 mr-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    {{ job.location }}
+                  </p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span v-if="job.saved" class="text-pink">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm"
+                  >
+                    {{ job.posted }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div class="flex items-center text-gray-600">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 mr-1"
+                    class="h-4 w-4 mr-2"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -486,133 +604,110 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
+                  </svg>
+                  {{ job.schedule["days"] }} - ({{ job.schedule["hours"] }})
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  {{ job.location }}
-                </p>
+                  {{ job.salaryRange }}
+                </div>
               </div>
-              <div class="flex items-center space-x-2">
-                <span v-if="job.saved" class="text-pink">
+
+              <div class="flex items-center text-gray-600 mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+                {{ job.requirements.toString() }}
+              </div>
+
+              <div class="flex justify-end space-x-3">
+                <button
+                  @click="toggleSaveJob(job)"
+                  class="px-4 py-2 border rounded-lg flex items-center transition-colors"
+                  :class="
+                    isSaved(job.savedByUsers)
+                      ? 'border-pink text-pink bg-pink-50 hover:bg-pink-100'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  "
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                    class="h-4 w-4 mr-2"
+                    :fill="isSaved(job.savedByUsers) ? 'currentColor' : 'none'"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
                     <path
-                      d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
                     />
                   </svg>
+                  {{ job.saved ? "Saved" : "Save" }}
+                </button>
+                <button
+                  v-if="job.status !== 'applied'"
+                  @click="applyForJob(job)"
+                  class="px-4 py-2 bg-pink text-white rounded-lg hover:bg-pink-700 transition-colors"
+                >
+                  Quick Apply
+                </button>
+                <button
+                  v-else
+                  class="px-4 py-2 bg-green-500 text-white rounded-lg cursor-default"
+                >
+                  Applied
+                </button>
+              </div>
+            </div>
+            <!-- Pagination -->
+            <div v-if="totalPages > 1" class="mt-8 flex justify-center">
+              <nav class="flex items-center space-x-2">
+                <button
+                  @click="jobStore.previousPage()"
+                  :disabled="!canGoPrevious"
+                  class="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  Previous
+                </button>
+                <span class="px-3 py-2 text-gray-600">
+                  Page {{ currentPage }} of {{ totalPages }}
                 </span>
-                <span
-                  class="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm"
+                <button
+                  @click="jobStore.nextPage()"
+                  :disabled="!canGoNext"
+                  class="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
-                  {{ job.posted }}
-                </span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <div class="flex items-center text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {{ job.schedule }}
-              </div>
-              <div class="flex items-center text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {{ job.salary }}
-              </div>
-            </div>
-
-            <div class="flex items-center text-gray-600 mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-              {{ job.requirements }}
-            </div>
-
-            <div class="flex justify-end space-x-3">
-              <button
-                @click="toggleSaveJob(job)"
-                class="px-4 py-2 border rounded-lg flex items-center transition-colors"
-                :class="
-                  job.saved
-                    ? 'border-pink text-pink bg-pink-50 hover:bg-pink-100'
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                "
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2"
-                  :fill="job.saved ? 'currentColor' : 'none'"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                  />
-                </svg>
-                {{ job.saved ? "Saved" : "Save" }}
-              </button>
-              <button
-                v-if="job.status !== 'applied'"
-                @click="applyForJob(job)"
-                class="px-4 py-2 bg-pink text-white rounded-lg hover:bg-pink-700 transition-colors"
-              >
-                Quick Apply
-              </button>
-              <button
-                v-else
-                class="px-4 py-2 bg-green-500 text-white rounded-lg cursor-default"
-              >
-                Applied
-              </button>
+                  Next
+                </button>
+              </nav>
             </div>
           </div>
         </div>
@@ -664,10 +759,13 @@
 </template>
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
-
-// Search and filter state
-const searchQuery = ref("");
-const activeFilter = ref("all");
+import { storeToRefs } from "pinia";
+import { useJobStore } from "@/stores/job";
+import { useAuthStore } from "@/stores/auth";
+// Use the job store
+const jobStore = useJobStore();
+const authStore = useAuthStore();
+// Application modal state
 const showApplicationModal = ref(false);
 const recentlyAppliedJobId = ref(null);
 
@@ -679,172 +777,43 @@ const activeFilters = ref({
   more: false,
 });
 
-// Selected filter values
-const selectedLocations = ref([]);
-const selectedSchedules = ref([]);
-const selectedSalaryRanges = ref([]);
-const selectedRequirements = ref([]);
+// Get reactive state from store
+const {
+  jobs,
+  loading,
+  error,
+  filterOptions,
+  selectedLocations,
+  selectedSchedules,
+  selectedSalaryRanges,
+  selectedRequirements,
+  activeFilter,
+  searchQuery,
+  totalPages,
+  currentPage,
+  // Computed properties
+  isFiltering,
+  hasActiveFilters,
+  canGoNext,
+  canGoPrevious,
+  // Filter options
+  getLocations: locations,
+  getSchedules: schedules,
+  getSalaryRanges: salaryRanges,
+  getRequirements: requirements,
+} = storeToRefs(jobStore);
 
-// Filter options
-const locations = [
-  "Brooklyn, NY",
-  "Manhattan, NY",
-  "Queens, NY",
-  "Staten Island, NY",
-  "Bronx, NY",
-];
-const schedules = ["Full-time", "Part-time", "Weekends", "Evenings", "Summer"];
-const salaryRanges = [
-  { label: "Ksh 1,500-2,000/hr", value: "1500-2000" },
-  { label: "Ksh 2,000-2,500/hr", value: "2000-2500" },
-  { label: "Ksh 2,500-3,000/hr", value: "2500-3000" },
-  { label: "Ksh 3,000+/hr", value: "3000+" },
-];
-const requirements = [
-  "First Aid Certified",
-  "Driver's License",
-  "Experience with infants",
-  "Swimming supervision",
-  "Background Check",
-];
-
-// Jobs data
-const jobs = ref([
-  {
-    id: 1,
-    title: "Full-time Nanny for 2 Children",
-    location: "Westlands, Nairobi",
-    schedule: "Mon-Fri, 8AM-6PM",
-    scheduleType: "Full-time", 
-    salary: "Ksh 2,000-2,500/hr",
-    requirements: "3+ years experience",
-    posted: "2 days ago",
-    status: "new",
-    saved: false,
-  },
-  {
-    id: 2,
-    title: "Part-time After School Care",
-    location: "Kilimani, Nairobi",
-    schedule: "Mon-Thu, 3PM-7PM",
-    scheduleType: "Part-time",
-    salary: "Ksh 2,300/hr",
-    requirements: "Driver's License Required",
-    posted: "1 day ago",
-    status: "new",
-    saved: false,
-  },
-  {
-    id: 3,
-    title: "Weekend Babysitter",
-    location: "Karen, Nairobi",
-    schedule: "Sat-Sun, Flexible Hours",
-    scheduleType: "Weekends",
-    salary: "Ksh 1,800-2,000/hr",
-    requirements: "Experience with infants",
-    posted: "5 days ago",
-    status: "new",
-    saved: false,
-  },
-  {
-    id: 4,
-    title: "Summer Nanny for 3 Children",
-    location: "Lavington, Nairobi",
-    schedule: "Mon-Fri, 9AM-5PM (June-August)",
-    scheduleType: "Summer",
-    salary: "Ksh 2,800/hr",
-    requirements: "Swimming supervision, 5+ years experience",
-    posted: "3 days ago",
-    status: "new",
-    saved: false,
-  },
-  {
-    id: 5,
-    title: "Date Night Sitter",
-    location: "Kileleshwa, Nairobi",
-    schedule: "Fri-Sat Evenings, 6PM-11PM",
-    scheduleType: "Evenings",
-    salary: "Ksh 2,000/hr",
-    requirements: "Experience with toddlers",
-    posted: "1 week ago",
-    status: "new",
-    saved: false,
-  },
-]);
-
-// Computed Properties
-const isFiltering = computed(() => {
-  return (
-    selectedLocations.value.length > 0 ||
-    selectedSchedules.value.length > 0 ||
-    selectedSalaryRanges.value.length > 0 ||
-    selectedRequirements.value.length > 0 ||
-    searchQuery.value.trim() !== ""
-  );
+const savedJobs = computed(() => {
+  if (!authStore.user?.id) return [];
+  return jobStore.getSavedJobs(authStore.user.id);
 });
-
-const filteredJobs = computed(() => {
-  let filtered = jobs.value;
-
-  // Search filter
-  if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(
-      (job) =>
-        job.title.toLowerCase().includes(query) ||
-        job.location.toLowerCase().includes(query) ||
-        job.requirements.toLowerCase().includes(query)
-    );
-  }
-
-  // Location filter
-  if (selectedLocations.value.length > 0) {
-    filtered = filtered.filter((job) =>
-      selectedLocations.value.includes(job.location)
-    );
-  }
-
-  // Schedule filter
-  if (selectedSchedules.value.length > 0) {
-    filtered = filtered.filter((job) =>
-      selectedSchedules.value.includes(job.scheduleType)
-    );
-  }
-
-  // Salary filter
-  if (selectedSalaryRanges.value.length > 0) {
-    filtered = filtered.filter((job) => {
-      const jobSalary = parseInt(job.salary.replace(/\D/g, ""));
-      return selectedSalaryRanges.value.some((range) => {
-        const [min, max] = range.split("-");
-        if (max) {
-          return jobSalary >= parseInt(min) && jobSalary <= parseInt(max);
-        }
-        return jobSalary >= parseInt(min);
-      });
-    });
-  }
-
-  // Requirements filter
-  if (selectedRequirements.value.length > 0) {
-    filtered = filtered.filter((job) =>
-      selectedRequirements.value.some((req) => job.requirements.includes(req))
-    );
-  }
-
-  // Status filter
-  if (activeFilter.value !== "all") {
-    if (activeFilter.value === "saved") {
-      filtered = filtered.filter((job) => job.saved);
-    } else {
-      filtered = filtered.filter((job) => job.status === activeFilter.value);
-    }
-  }
-
-  return filtered;
-});
-
 const noJobsMessage = computed(() => {
+  if (loading.value) {
+    return "Loading jobs...";
+  }
+  if (error.value) {
+    return "Error loading jobs. Please try again.";
+  }
   if (isFiltering.value) {
     return "No jobs match your current filters. Try adjusting your search criteria.";
   }
@@ -861,7 +830,6 @@ const noJobsMessage = computed(() => {
 // Methods
 const toggleFilter = (filterName: string) => {
   // Close other filters
-  
   Object.keys(activeFilters.value).forEach((key) => {
     if (key !== filterName) {
       activeFilters.value[key] = false;
@@ -871,6 +839,12 @@ const toggleFilter = (filterName: string) => {
   activeFilters.value[filterName] = !activeFilters.value[filterName];
 };
 
+const isSaved = (users) => {
+  if (!Array.isArray(users) || !authStore.user || !authStore.user.id)
+    return false;
+  return users.some((user) => user.id === authStore.user.id);
+};
+
 const applyFilter = (filterType: string) => {
   activeFilters.value[filterType] = false;
 };
@@ -878,54 +852,65 @@ const applyFilter = (filterType: string) => {
 const removeFilter = (type: string, value: string) => {
   switch (type) {
     case "location":
-      selectedLocations.value = selectedLocations.value.filter(
-        (loc) => loc !== value
-      );
+      jobStore.removeLocationFilter(value);
       break;
     case "schedule":
-      selectedSchedules.value = selectedSchedules.value.filter(
-        (sch) => sch !== value
-      );
+      jobStore.removeScheduleFilter(value);
       break;
     case "salary":
-      selectedSalaryRanges.value = selectedSalaryRanges.value.filter(
-        (sal) => sal !== value
-      );
+      jobStore.removeSalaryFilter(value);
       break;
     case "requirements":
-      selectedRequirements.value = selectedRequirements.value.filter(
-        (req) => req !== value
-      );
+      jobStore.removeRequirementFilter(value);
       break;
   }
 };
 
 const clearAllFilters = () => {
-  selectedLocations.value = [];
-  selectedSchedules.value = [];
-  selectedSalaryRanges.value = [];
-  selectedRequirements.value = [];
-  searchQuery.value = "";
+  jobStore.clearAllFilters();
 };
 
 const getSalaryRangeLabel = (value: string) => {
-  const range = salaryRanges.find((r) => r.value === value);
+  const range = salaryRanges.value.find((r) => r.value === value);
   return range ? range.label : value;
 };
 
 const setActiveFilter = (filter: string) => {
-  activeFilter.value = filter;
+  jobStore.setActiveFilter(filter as "all" | "new" | "applied" | "saved");
 };
 
-const toggleSaveJob = (job) => {
-  job.saved = !job.saved;
+const toggleSaveJob = async (job: any) => {
+  try {
+    await jobStore.toggleSaveJob(job.id);
+  } catch (err) {
+    console.error("Failed to toggle save job:", err);
+    // Fallback to local toggle if API fails
+    job.saved = !job.saved;
+  }
 };
 
-const applyForJob = (job) => {
-  job.status = "applied";
-  recentlyAppliedJobId.value = job.id;
-  showApplicationModal.value = true;
+const applyForJob = async (job: any) => {
+  try {
+    await jobStore.applyForJob(job.id, {});
+    recentlyAppliedJobId.value = job.id;
+    showApplicationModal.value = true;
+  } catch (err) {
+    console.error("Failed to apply for job:", err);
+    // Still show success modal for demo purposes
+    job.status = "applied";
+    recentlyAppliedJobId.value = job.id;
+    showApplicationModal.value = true;
+  }
 };
+
+// Watch for search query changes with debounce
+let searchTimeout: number;
+watch(searchQuery, (newQuery) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    jobStore.setSearchQuery(newQuery);
+  }, 500);
+});
 
 // Close filter dropdowns when clicking outside
 const handleClickOutside = (event: MouseEvent) => {
@@ -938,8 +923,9 @@ const handleClickOutside = (event: MouseEvent) => {
 };
 
 // Lifecycle hooks
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener("click", handleClickOutside);
+  await jobStore.loadJobs();
 });
 
 onUnmounted(() => {

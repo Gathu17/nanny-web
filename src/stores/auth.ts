@@ -1,10 +1,17 @@
 import { defineStore } from "pinia";
-import { authApi, type User, type LoginPayload, type SignupPayload } from '@/api/auth';
+import {
+  authApi,
+  type User,
+  type LoginPayload,
+  type SignupPayload,
+} from "@/api/auth";
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  token: string | null;
+  token: {
+    token: string | null;
+  };
   loading: boolean;
   error: string | null;
 }
@@ -24,17 +31,19 @@ export const useAuthStore = defineStore("auth", {
 
       try {
         const response = await authApi.login(payload);
-        console.log(response)
+        console.log(response);
         this.user = response.user;
         this.isAuthenticated = true;
         this.token = response.token;
         
         // Store token in localStorage
-        localStorage.setItem('auth_token', response.token);
-        
+        localStorage.setItem("auth_token", response.token?.token);
+
         return true;
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to login. Please check your credentials.';
+        this.error =
+          error.response?.data?.message ||
+          "Failed to login. Please check your credentials.";
         return false;
       } finally {
         this.loading = false;
@@ -45,16 +54,15 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-
         const response = await authApi.signup(userData);
         console.log(response);
-        
+
         this.user = response.user;
         this.isAuthenticated = true;
         this.token = response.token;
-        
-        localStorage.setItem('auth_token', response.token);
-        
+
+        localStorage.setItem("auth_token", response.token.token);
+
         return true;
       } catch (error: any) {
         this.error = error;
@@ -67,37 +75,44 @@ export const useAuthStore = defineStore("auth", {
       try {
         await authApi.logout();
       } catch (error) {
-        console.error('Logout error:', error);
+        console.error("Logout error:", error);
       } finally {
         this.user = null;
         this.isAuthenticated = false;
         this.token = null;
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem("auth_token");
       }
     },
     async checkAuth() {
-      const token = localStorage.getItem('auth_token');
-      if (!token) return;
-
+      this.loading = true;
       try {
-        this.token = token;
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          this.loading = false;
+          return;
+        }
+        this.token = { token };
         const user = await authApi.getCurrentUser();
         this.user = user;
         this.isAuthenticated = true;
       } catch (error) {
-        // If token is invalid or expired, logout
         this.logout();
+      } finally {
+        this.loading = false;
       }
     },
     async refreshAuthToken() {
+      this.loading = true;
       try {
         const { token } = await authApi.refreshToken();
-        this.token = token;
-        localStorage.setItem('auth_token', token);
+        this.token = { token };
+        localStorage.setItem("auth_token", token);
         return true;
       } catch (error) {
         this.logout();
         return false;
+      } finally {
+        this.loading = false;
       }
     },
     async updateProfile(userData: Partial<User>) {
@@ -109,7 +124,8 @@ export const useAuthStore = defineStore("auth", {
         this.user = updatedUser;
         return true;
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to update profile';
+        this.error =
+          error.response?.data?.message || "Failed to update profile";
         return false;
       } finally {
         this.loading = false;
@@ -126,7 +142,7 @@ export const useAuthStore = defineStore("auth", {
         }
         return response;
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to verify email';
+        this.error = error.response?.data?.message || "Failed to verify email";
         return false;
       } finally {
         this.loading = false;
@@ -139,7 +155,9 @@ export const useAuthStore = defineStore("auth", {
       try {
         return await authApi.forgotPassword(email);
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to process forgot password request';
+        this.error =
+          error.response?.data?.message ||
+          "Failed to process forgot password request";
         return false;
       } finally {
         this.loading = false;
@@ -152,7 +170,8 @@ export const useAuthStore = defineStore("auth", {
       try {
         return await authApi.resetPassword(token, password);
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to reset password';
+        this.error =
+          error.response?.data?.message || "Failed to reset password";
         return false;
       } finally {
         this.loading = false;
@@ -165,79 +184,21 @@ export const useAuthStore = defineStore("auth", {
       try {
         return await authApi.changePassword({ currentPassword, newPassword });
       } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to change password';
+        this.error =
+          error.response?.data?.message || "Failed to change password";
         return false;
       } finally {
         this.loading = false;
       }
-    }
+    },
   },
   getters: {
-    isNanny: (state): boolean => state.user?.userType === 'nanny',
-    isClient: (state): boolean => state.user?.userType === 'parent',
+    isNanny: (state): boolean => state.user?.userType === "nanny",
+    isClient: (state): boolean => state.user?.userType === "parent",
     userRole: (state): string | undefined => state.user?.userType,
     isLoading: (state): boolean => state.loading,
     hasError: (state): boolean => !!state.error,
     isVerified: (state): boolean => !!state.user?.isVerified,
   },
+  persist: true,
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,24 +3,23 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    '@pinia/nuxt',
-    ['@vee-validate/nuxt',{
-      autoImports: true,
-    }],
+    "@pinia/nuxt",
+    [
+      "@vee-validate/nuxt",
+      {
+        autoImports: true,
+      },
+    ],
+    "pinia-plugin-persistedstate/nuxt",
   ],
 
   pinia: {
-    autoImports: [
-      'defineStore',
-      ['defineStore', 'definePiniaStore'],
-    ]
+    autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
   },
 
-  css: ['~/assets/main.css'],
+  css: ["~/assets/main.css"],
 
-  plugins: [
-    {src: "@/plugins/fontawesome", ssr: false}
-  ],
+  plugins: [{ src: "@/plugins/fontawesome", ssr: false }],
 
   components: [
     { path: "~/components/presentational", global: true },
@@ -47,9 +46,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiUrl: process.env.API_URL || 'http://localhost:3000/api'
+      apiUrl: process.env.API_URL || "http://localhost:3000/api",
     },
   },
   ssr: false,
-  compatibilityDate: "2024-11-21"
-})
+  compatibilityDate: "2024-11-21",
+});

@@ -9,7 +9,7 @@
       <div class="flex justify-end mt-6">
         <button
           @click="handleSubmit"
-          class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-md transition-colors"
+          class="bg-pink hover:bg-pink-600 text-white px-6 py-2 rounded-md transition-colors"
         >
           Next
         </button>
