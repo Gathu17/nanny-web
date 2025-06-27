@@ -130,31 +130,47 @@
           </h2>
           <ul class="space-y-6">
             <li class="flex items-center text-xl">
-              <font-awesome-icon
-                :icon="['far', 'square-check']"
-                class="w-8 h-8 mr-4"
-              />
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
               Trusted and verified nannies with detailed profiles and reviews
             </li>
             <li class="flex items-center text-xl">
-              <font-awesome-icon
-                :icon="['far', 'square-check']"
-                class="w-8 h-8 mr-4"
-              />
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
               Flexible scheduling to fit your family's needs
             </li>
             <li class="flex items-center text-xl">
-              <font-awesome-icon
-                :icon="['far', 'square-check']"
-                class="w-8 h-8 mr-4"
-              />
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
               Care options for all ages, from infants to toddlers
             </li>
             <li class="flex items-center text-xl">
-              <font-awesome-icon
-                :icon="['far', 'square-check']"
-                class="w-8 h-8 mr-4"
-              />
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
               24/7 customer support to assist with your care needs
             </li>
           </ul>
@@ -178,6 +194,7 @@
             <div class="flex flex-col sm:flex-row justify-center gap-4">
               <button
                 class="px-8 py-4 bg-[#FF6B6B] hover:bg-[#FF5252] text-white font-bold rounded-full transition-all duration-300"
+                @click="() => $router.push()"
               >
                 Find Child Care
               </button>

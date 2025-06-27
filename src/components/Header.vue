@@ -5,13 +5,9 @@
         <div class="flex justify-between items-center h-20">
           <!-- Logo -->
           <div class="flex-shrink-0">
-            <a href="/" class="flex items-center">
-              <img
-                src="@/assets/images/nanny-logo.png"
-                alt="NannyMatch Logo"
-                class="h-16 w-40 object-contain"
-              />
-            </a>
+            <NuxtLink to="/client/dashboard" class="flex items-center">
+                <span class="text-primary text-2xl font-bold">NannyMatch</span>
+            </NuxtLink>
           </div>
 
           <!-- Desktop Navigation -->

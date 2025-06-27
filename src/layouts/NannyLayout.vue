@@ -91,7 +91,7 @@ const toggleDropdown = () => {
 
 const logout = () => {
   // TODO: Implement logout logic
-  navigateTo('/login')
+  navigateTo('/auth/login')
 }
 
 // Close dropdown when clicking outside

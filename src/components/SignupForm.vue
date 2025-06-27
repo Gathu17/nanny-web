@@ -184,6 +184,7 @@ async function handleSubmit(values: any) {
   data['userType'] = userType.value
 
   const result = await authStore.signup(data);
+  console.log(result)
   if (result) {
     if(authStore.user.userType == "nanny"){
       navigateTo('/nanny/onboarding')

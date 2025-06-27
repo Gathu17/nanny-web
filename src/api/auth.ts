@@ -67,7 +67,7 @@ export const authApi = {
   },
 
   async logout(): Promise<void> {
-    return api.post('/auth/logout');
+    return api.get('/auth/logout');
   },
 
   async refreshToken(): Promise<{ token: string }> {
