@@ -4,11 +4,11 @@
       <div
         class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden"
       >
-        <div class="bg-pink-600 p-4 text-white">
+        <div class="bg-pink p-4 text-white">
           <h1 class="text-2xl font-bold">Messages</h1>
         </div>
 
-        <div class="flex h-[calc(100vh-12rem)]">
+        <div class="flex h-[calc(100vh-8rem)]">
           <!-- Conversation List -->
           <div class="w-1/3 border-r border-gray-200 overflow-y-auto">
             <div class="p-4 border-b border-gray-200">
@@ -155,7 +155,7 @@
               </div>
 
               <!-- Message Input -->
-              <div class="p-4 border-t border-gray-200">
+              <div class="p-4 border-t border-gray-200 mb-4">
                 <form @submit.prevent="sendMessage" class="flex space-x-2">
                   <input
                     type="text"
@@ -222,210 +222,233 @@
   </NuxtLayout>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: "",
-      newMessage: "",
-      selectedConversation: null,
-      conversations: [
-        {
-          id: 1,
-          name: "Sarah Johnson",
-          avatar: "https://randomuser.me/api/portraits/women/12.jpg",
-          lastMessage: "What time can you come on Friday?",
-          lastMessageTime: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-          unread: true,
-          isOnline: true,
-          messages: [
-            {
-              sender: "client",
-              text: "Hi there! I'm looking for a nanny for my 2-year-old son next week.",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-            },
-            {
-              sender: "nanny",
-              text: "Hello! I'd be happy to help. What days and times are you looking for?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 1.5), // 1.5 hours ago
-            },
-            {
-              sender: "client",
-              text: "I need someone on Monday, Wednesday, and Friday from 9am to 3pm.",
-              time: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
-            },
-            {
-              sender: "nanny",
-              text: "That works for me! I'm available on those days.",
-              time: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-            },
-            {
-              sender: "client",
-              text: "Great! What time can you come on Friday?",
-              time: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: "Michael Thompson",
-          avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-          lastMessage: "Thanks for taking care of Emma yesterday!",
-          lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
-          unread: false,
-          isOnline: false,
-          lastSeen: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-          messages: [
-            {
-              sender: "client",
-              text: "Hi, are you available for an emergency booking tomorrow?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-            },
-            {
-              sender: "nanny",
-              text: "Yes, I can help out. What time do you need me?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 23), // 23 hours ago
-            },
-            {
-              sender: "client",
-              text: "From 2pm to 6pm if possible. My daughter Emma is 4 years old.",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 22), // 22 hours ago
-            },
-            {
-              sender: "nanny",
-              text: "That works for me. I'll be there at 2pm sharp.",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 21), // 21 hours ago
-            },
-            {
-              sender: "client",
-              text: "Thanks for taking care of Emma yesterday!",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
-            },
-          ],
-        },
-        {
-          id: 3,
-          name: "Jennifer Davis",
-          avatar: "https://randomuser.me/api/portraits/women/65.jpg",
-          lastMessage: "Can we schedule a video call to discuss details?",
-          lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
-          unread: true,
-          isOnline: true,
-          messages: [
-            {
-              sender: "client",
-              text: "Hello, I'm looking for a regular nanny for my twins.",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
-            },
-            {
-              sender: "nanny",
-              text: "Hi Jennifer! I have experience with twins. How old are they?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 47), // 47 hours ago
-            },
-            {
-              sender: "client",
-              text: "They're 3 years old. We need someone 3 days a week.",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 36), // 36 hours ago
-            },
-            {
-              sender: "nanny",
-              text: "I can definitely help with that. Which days were you thinking?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 24), // 24 hours ago
-            },
-            {
-              sender: "client",
-              text: "Can we schedule a video call to discuss details?",
-              time: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
-            },
-          ],
-        },
-      ],
-    };
-  },
-  computed: {
-    filteredConversations() {
-      if (!this.searchQuery) return this.conversations;
+<script setup>
+import { ref, computed, nextTick, onMounted } from "vue";
+import { useMessageStore } from "@/stores/message";
 
-      const query = this.searchQuery.toLowerCase();
-      return this.conversations.filter(
-        (conversation) =>
-          conversation.name.toLowerCase().includes(query) ||
-          conversation.lastMessage.toLowerCase().includes(query)
-      );
-    },
-  },
-  methods: {
-    selectConversation(conversation) {
-      this.selectedConversation = conversation;
-      if (conversation.unread) {
-        conversation.unread = false;
-      }
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    },
-    sendMessage() {
-      if (!this.newMessage.trim() || !this.selectedConversation) return;
-
-      const message = {
+// State
+const searchQuery = ref("");
+const newMessage = ref("");
+const selectedConversation = ref(null);
+const messageStore = useMessageStore();
+const conversations = computed(() => {
+  return messageStore.chats
+})
+const converations = ref([
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    avatar: "https://randomuser.me/api/portraits/women/12.jpg",
+    lastMessage: "What time can you come on Friday?",
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+    unread: true,
+    isOnline: true,
+    messages: [
+      {
+        sender: "client",
+        text: "Hi there! I'm looking for a nanny for my 2-year-old son next week.",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+      },
+      {
         sender: "nanny",
-        text: this.newMessage,
-        time: new Date(),
-      };
-
-      this.selectedConversation.messages.push(message);
-      this.selectedConversation.lastMessage = this.newMessage;
-      this.selectedConversation.lastMessageTime = new Date();
-      this.newMessage = "";
-
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    },
-    scrollToBottom() {
-      if (this.$refs.messagesContainer) {
-        this.$refs.messagesContainer.scrollTop =
-          this.$refs.messagesContainer.scrollHeight;
-      }
-    },
-    formatTime(date) {
-      if (!date) return "";
-
-      const now = new Date();
-      const diff = now - date;
-
-      // Less than a minute
-      if (diff < 60 * 1000) {
-        return "Just now";
-      }
-
-      // Less than an hour
-      if (diff < 60 * 60 * 1000) {
-        const minutes = Math.floor(diff / (60 * 1000));
-        return `${minutes}m ago`;
-      }
-
-      // Less than a day
-      if (diff < 24 * 60 * 60 * 1000) {
-        const hours = Math.floor(diff / (60 * 60 * 1000));
-        return `${hours}h ago`;
-      }
-
-      // Less than a week
-      if (diff < 7 * 24 * 60 * 60 * 1000) {
-        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
-        return `${days}d ago`;
-      }
-
-      // Format as date
-      return date.toLocaleDateString();
-    },
+        text: "Hello! I'd be happy to help. What days and times are you looking for?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 1.5), // 1.5 hours ago
+      },
+      {
+        sender: "client",
+        text: "I need someone on Monday, Wednesday, and Friday from 9am to 3pm.",
+        time: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+      },
+      {
+        sender: "nanny",
+        text: "That works for me! I'm available on those days.",
+        time: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+      },
+      {
+        sender: "client",
+        text: "Great! What time can you come on Friday?",
+        time: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+      },
+    ],
   },
-  mounted() {
-    // Select the first conversation by default
-    if (this.conversations.length > 0) {
-      this.selectConversation(this.conversations[0]);
-    }
+  {
+    id: 2,
+    name: "Michael Thompson",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    lastMessage: "Thanks for taking care of Emma yesterday!",
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
+    unread: false,
+    isOnline: false,
+    lastSeen: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+    messages: [
+      {
+        sender: "client",
+        text: "Hi, are you available for an emergency booking tomorrow?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+      },
+      {
+        sender: "nanny",
+        text: "Yes, I can help out. What time do you need me?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 23), // 23 hours ago
+      },
+      {
+        sender: "client",
+        text: "From 2pm to 6pm if possible. My daughter Emma is 4 years old.",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 22), // 22 hours ago
+      },
+      {
+        sender: "nanny",
+        text: "That works for me. I'll be there at 2pm sharp.",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 21), // 21 hours ago
+      },
+      {
+        sender: "client",
+        text: "Thanks for taking care of Emma yesterday!",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
+      },
+    ],
   },
-};
+  {
+    id: 3,
+    name: "Jennifer Davis",
+    avatar: "https://randomuser.me/api/portraits/women/65.jpg",
+    lastMessage: "Can we schedule a video call to discuss details?",
+    lastMessageTime: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
+    unread: true,
+    isOnline: true,
+    messages: [
+      {
+        sender: "client",
+        text: "Hello, I'm looking for a regular nanny for my twins.",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+      },
+      {
+        sender: "nanny",
+        text: "Hi Jennifer! I have experience with twins. How old are they?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 47), // 47 hours ago
+      },
+      {
+        sender: "client",
+        text: "They're 3 years old. We need someone 3 days a week.",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 36), // 36 hours ago
+      },
+      {
+        sender: "nanny",
+        text: "I can definitely help with that. Which days were you thinking?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 24), // 24 hours ago
+      },
+      {
+        sender: "client",
+        text: "Can we schedule a video call to discuss details?",
+        time: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
+      },
+    ],
+  },
+]);
+
+// Computed
+const filteredConversations = computed(() => {
+  if (!searchQuery.value) return conversations.value;
+  const query = searchQuery.value.toLowerCase();
+  return conversations.value.filter(
+    (conversation) =>
+      conversation.name.toLowerCase().includes(query) ||
+      conversation.lastMessage.toLowerCase().includes(query)
+  );
+});
+
+// Methods
+function selectConversation(conversation) {
+  selectedConversation.value = conversation;
+  if (conversation.unread) {
+    conversation.unread = false;
+  }
+  nextTick(() => {
+    scrollToBottom();
+  });
+}
+
+function sendMessage() {
+  if (!newMessage.value.trim() || !selectedConversation.value) return;
+
+  const message = {
+    sender: "nanny",
+    text: newMessage.value,
+    time: new Date(),
+  };
+
+  selectedConversation.value.messages.push(message);
+  selectedConversation.value.lastMessage = newMessage.value;
+  selectedConversation.value.lastMessageTime = new Date();
+  newMessage.value = "";
+
+  nextTick(() => {
+    scrollToBottom();
+  });
+}
+
+// For template ref
+const messagesContainer = ref(null);
+
+function scrollToBottom() {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+}
+
+function formatTime(date) {
+  if (!date) return "";
+
+  // Parse ISO string if date is a string
+  let parsedDate;
+  if (typeof date === "string") {
+    parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return "";
+  } else if (date instanceof Date) {
+    parsedDate = date;
+  } else {
+    return "";
+  }
+
+  const now = new Date();
+  const diff = now - parsedDate;
+
+  // Less than a minute
+  if (diff < 60 * 1000) {
+    return "Just now";
+  }
+
+  // Less than an hour
+  if (diff < 60 * 60 * 1000) {
+    const minutes = Math.floor(diff / (60 * 1000));
+    return `${minutes}m ago`;
+  }
+
+  // Less than a day
+  if (diff < 24 * 60 * 60 * 1000) {
+    const hours = Math.floor(diff / (60 * 60 * 1000));
+    return `${hours}h ago`;
+  }
+
+  // Less than a week
+  if (diff < 7 * 24 * 60 * 60 * 1000) {
+    const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+    return `${days}d ago`;
+  }
+
+  // Format as date (e.g., Jun 22, 2025)
+  return parsedDate.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+// Lifecycle
+onMounted(async () => {
+  await messageStore.fetchChats();
+  if (conversations.value.length > 0) {
+    selectConversation(conversations.value[0]);
+  }
+});
 </script>

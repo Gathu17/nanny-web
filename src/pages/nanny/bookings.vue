@@ -14,7 +14,7 @@
                 class="px-4 py-2 rounded-lg transition-colors duration-150"
                 :class="
                   view === 'calendar'
-                    ? 'bg-pink-100 text-pink-700'
+                    ? 'bg-pink text-white'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 "
               >
@@ -41,7 +41,7 @@
                 class="px-4 py-2 rounded-lg transition-colors duration-150"
                 :class="
                   view === 'list'
-                    ? 'bg-pink-100 text-pink-700'
+                    ? 'bg-pink text-white'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 "
               >
@@ -132,7 +132,7 @@
               <div
                 class="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs"
                 :class="{
-                  'bg-pink-600 text-white': day.isToday,
+                  'bg-pink text-white': day.isToday,
                   'text-gray-400': !day.isCurrentMonth && !day.isToday,
                   'text-gray-700': day.isCurrentMonth && !day.isToday,
                 }"
@@ -148,7 +148,7 @@
                   :class="getBookingColorClass(booking.status)"
                   @click="selectBooking(booking)"
                 >
-                  {{ booking.startTime }} - {{ booking.client }}
+                  {{ booking.startTime }} - {{ booking.parentProfile?.familyName }}
                 </div>
               </div>
             </div>
@@ -182,7 +182,7 @@
                     />
                     <div>
                       <h3 class="font-medium text-gray-900">
-                        {{ booking.client }}
+                        {{ booking.parentProfile?.familyName }}
                       </h3>
                       <div class="flex items-center text-sm text-gray-500 mt-1">
                         <svg
@@ -222,7 +222,7 @@
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        {{ booking.location }}
+                        {{ booking.job?.location }}
                       </div>
                     </div>
                   </div>
@@ -281,7 +281,7 @@
                   />
                   <div class="ml-4">
                     <h3 class="font-medium text-lg">
-                      {{ selectedBooking.client }}
+                      {{ selectedBooking.parentProfile?.familyName }}
                     </h3>
                     <p class="text-gray-500">
                       {{ selectedBooking.clientPhone }}
@@ -308,7 +308,7 @@
                     <div>
                       <p class="text-sm text-gray-500">Date</p>
                       <p class="font-medium">
-                        {{ formatDate(selectedBooking.date) }}
+                        {{ formatDate(selectedBooking.bookingDate) }}
                       </p>
                     </div>
                   </div>
@@ -360,7 +360,7 @@
                     </svg>
                     <div>
                       <p class="text-sm text-gray-500">Location</p>
-                      <p class="font-medium">{{ selectedBooking.location }}</p>
+                      <p class="font-medium">{{ selectedBooking.job?.location }}</p>
                     </div>
                   </div>
 
@@ -381,12 +381,12 @@
                     </svg>
                     <div>
                       <p class="text-sm text-gray-500">Payment</p>
-                      <p class="font-medium">${{ selectedBooking.payment }}</p>
+                      <p class="font-medium">${{ selectedBooking.job?.salaryRange }}</p>
                     </div>
                   </div>
                 </div>
 
-                <div>
+                <!-- <div>
                   <h4 class="font-medium text-gray-700 mb-2">Children</h4>
                   <div class="space-y-2">
                     <div
@@ -406,8 +406,8 @@
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div> 
+                </div>-->
 
                 <div v-if="selectedBooking.notes">
                   <h4 class="font-medium text-gray-700 mb-2">Notes</h4>
@@ -450,244 +450,257 @@
   </NuxtLayout>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      view: "calendar",
-      selectedBooking: null,
-      weekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      currentDate: new Date(),
-      bookings: [
-        {
-          id: 1,
-          client: "Sarah Johnson",
-          clientAvatar: "https://randomuser.me/api/portraits/women/12.jpg",
-          clientPhone: "(555) 123-4567",
-          date: "2023-06-15",
-          startTime: "9:00 AM",
-          endTime: "3:00 PM",
-          location: "123 Main St, Anytown",
-          status: "Confirmed",
-          payment: 120,
-          children: [
-            { name: "Ethan", age: 4 },
-            { name: "Olivia", age: 2 },
-          ],
-          notes:
-            "Ethan has a peanut allergy. Please make sure to check all food labels.",
-        },
-        {
-          id: 2,
-          client: "Michael Thompson",
-          clientAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
-          clientPhone: "(555) 987-6543",
-          date: "2023-06-16",
-          startTime: "2:00 PM",
-          endTime: "6:00 PM",
-          location: "456 Oak Ave, Somewhere",
-          status: "Pending",
-          payment: 80,
-          children: [{ name: "Emma", age: 5 }],
-          notes:
-            "Emma loves to draw. There are art supplies in the second drawer of her desk.",
-        },
-        {
-          id: 3,
-          client: "Jennifer Davis",
-          clientAvatar: "https://randomuser.me/api/portraits/women/65.jpg",
-          clientPhone: "(555) 456-7890",
-          date: "2023-06-17",
-          startTime: "10:00 AM",
-          endTime: "4:00 PM",
-          location: "789 Pine St, Elsewhere",
-          status: "Confirmed",
-          payment: 120,
-          children: [
-            { name: "Aiden", age: 3 },
-            { name: "Sophia", age: 3 },
-          ],
-          notes:
-            "The twins nap from 1-3 PM. They each have their own favorite stuffed animal for naptime.",
-        },
-        {
-          id: 4,
-          client: "David Wilson",
-          clientAvatar: "https://randomuser.me/api/portraits/men/45.jpg",
-          clientPhone: "(555) 234-5678",
-          date: "2023-06-18",
-          startTime: "6:00 PM",
-          endTime: "10:00 PM",
-          location: "101 Elm St, Nowhere",
-          status: "Completed",
-          payment: 80,
-          children: [
-            { name: "Noah", age: 6 },
-            { name: "Ava", age: 4 },
-          ],
-          notes:
-            "Bedtime is 8:30 PM for Ava and 9:00 PM for Noah. They both need to brush their teeth before bed.",
-        },
-        {
-          id: 5,
-          client: "Lisa Brown",
-          clientAvatar: "https://randomuser.me/api/portraits/women/33.jpg",
-          clientPhone: "(555) 876-5432",
-          date: "2023-06-20",
-          startTime: "8:00 AM",
-          endTime: "5:00 PM",
-          location: "202 Maple Ave, Anytown",
-          status: "Pending",
-          payment: 180,
-          children: [{ name: "Liam", age: 1 }],
-          notes:
-            "Liam is still on formula. Instructions for preparation are on the fridge.",
-        },
-      ],
-    };
-  },
-  computed: {
-    currentMonthYear() {
-      const options = { month: "long", year: "numeric" };
-      return this.currentDate.toLocaleDateString("en-US", options);
-    },
-    calendarDays() {
-      const year = this.currentDate.getFullYear();
-      const month = this.currentDate.getMonth();
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import {useBookingsStore} from '@/stores/bookings'
 
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
+const view = ref('calendar')
+const selectedBooking = ref(null)
+const weekDays = ref(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
+const currentDate = ref(new Date())
+const bookingsStore = useBookingsStore();
+// const bookings = ref([
+//   {
+//     id: 1,
+//     client: "Sarah Johnson",
+//     clientAvatar: "https://randomuser.me/api/portraits/women/12.jpg",
+//     clientPhone: "(555) 123-4567",
+//     date: "2023-06-15",
+//     startTime: "9:00 AM",
+//     endTime: "3:00 PM",
+//     location: "123 Main St, Anytown",
+//     status: "Confirmed",
+//     payment: 120,
+//     children: [
+//       { name: "Ethan", age: 4 },
+//       { name: "Olivia", age: 2 },
+//     ],
+//     notes:
+//       "Ethan has a peanut allergy. Please make sure to check all food labels.",
+//   },
+//   {
+//     id: 2,
+//     client: "Michael Thompson",
+//     clientAvatar: "https://randomuser.me/api/portraits/men/32.jpg",
+//     clientPhone: "(555) 987-6543",
+//     date: "2023-06-16",
+//     startTime: "2:00 PM",
+//     endTime: "6:00 PM",
+//     location: "456 Oak Ave, Somewhere",
+//     status: "Pending",
+//     payment: 80,
+//     children: [{ name: "Emma", age: 5 }],
+//     notes:
+//       "Emma loves to draw. There are art supplies in the second drawer of her desk.",
+//   },
+//   {
+//     id: 3,
+//     client: "Jennifer Davis",
+//     clientAvatar: "https://randomuser.me/api/portraits/women/65.jpg",
+//     clientPhone: "(555) 456-7890",
+//     date: "2023-06-17",
+//     startTime: "10:00 AM",
+//     endTime: "4:00 PM",
+//     location: "789 Pine St, Elsewhere",
+//     status: "Confirmed",
+//     payment: 120,
+//     children: [
+//       { name: "Aiden", age: 3 },
+//       { name: "Sophia", age: 3 },
+//     ],
+//     notes:
+//       "The twins nap from 1-3 PM. They each have their own favorite stuffed animal for naptime.",
+//   },
+//   {
+//     id: 4,
+//     client: "David Wilson",
+//     clientAvatar: "https://randomuser.me/api/portraits/men/45.jpg",
+//     clientPhone: "(555) 234-5678",
+//     date: "2023-06-18",
+//     startTime: "6:00 PM",
+//     endTime: "10:00 PM",
+//     location: "101 Elm St, Nowhere",
+//     status: "Completed",
+//     payment: 80,
+//     children: [
+//       { name: "Noah", age: 6 },
+//       { name: "Ava", age: 4 },
+//     ],
+//     notes:
+//       "Bedtime is 8:30 PM for Ava and 9:00 PM for Noah. They both need to brush their teeth before bed.",
+//   },
+//   {
+//     id: 5,
+//     client: "Lisa Brown",
+//     clientAvatar: "https://randomuser.me/api/portraits/women/33.jpg",
+//     clientPhone: "(555) 876-5432",
+//     date: "2023-06-20",
+//     startTime: "8:00 AM",
+//     endTime: "5:00 PM",
+//     location: "202 Maple Ave, Anytown",
+//     status: "Pending",
+//     payment: 180,
+//     children: [{ name: "Liam", age: 1 }],
+//     notes:
+//       "Liam is still on formula. Instructions for preparation are on the fridge.",
+//   },
+// ])
+const bookings = computed(() => {
+  return bookingsStore.bookings
+})
+onMounted( async() => {
+ try {
+   await bookingsStore.loadBookings();
+ } catch (err) {
+   consol
+ }
+})
 
-      const daysInMonth = lastDay.getDate();
-      const startingDayOfWeek = firstDay.getDay();
+const currentMonthYear = computed(() => {
+  const options = { month: "long", year: "numeric" }
+  return currentDate.value.toLocaleDateString("en-US", options)
+})
 
-      const today = new Date();
-      const isToday = (date) => {
-        return (
-          date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
-        );
-      };
+const calendarDays = computed(() => {
+  const year = currentDate.value.getFullYear()
+  const month = currentDate.value.getMonth()
 
-      // Previous month days to fill the first week
-      const previousMonthDays = [];
-      if (startingDayOfWeek > 0) {
-        const prevMonth = new Date(year, month, 0);
-        const prevMonthDaysCount = prevMonth.getDate();
+  const firstDay = new Date(year, month, 1)
+  const lastDay = new Date(year, month + 1, 0)
 
-        for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-          const date = new Date(year, month - 1, prevMonthDaysCount - i);
-          previousMonthDays.push({
-            date: prevMonthDaysCount - i,
-            isCurrentMonth: false,
-            isToday: isToday(date),
-            fullDate: date,
-            bookings: this.getBookingsForDate(this.formatDateString(date)),
-          });
-        }
-      }
+  const daysInMonth = lastDay.getDate()
+  const startingDayOfWeek = firstDay.getDay()
 
-      // Current month days
-      const currentMonthDays = [];
-      for (let i = 1; i <= daysInMonth; i++) {
-        const date = new Date(year, month, i);
-        currentMonthDays.push({
-          date: i,
-          isCurrentMonth: true,
-          isToday: isToday(date),
-          fullDate: date,
-          bookings: this.getBookingsForDate(this.formatDateString(date)),
-        });
-      }
+  const today = new Date()
+  const isToday = (date) => {
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    )
+  }
 
-      // Next month days to fill the last week
-      const nextMonthDays = [];
-      const totalDays = previousMonthDays.length + currentMonthDays.length;
-      const remainingDays = 42 - totalDays; // 6 rows of 7 days
+  // Previous month days to fill the first week
+  const previousMonthDays = []
+  if (startingDayOfWeek > 0) {
+    const prevMonth = new Date(year, month, 0)
+    const prevMonthDaysCount = prevMonth.getDate()
 
-      for (let i = 1; i <= remainingDays; i++) {
-        const date = new Date(year, month + 1, i);
-        nextMonthDays.push({
-          date: i,
-          isCurrentMonth: false,
-          isToday: isToday(date),
-          fullDate: date,
-          bookings: this.getBookingsForDate(this.formatDateString(date)),
-        });
-      }
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      const date = new Date(year, month - 1, prevMonthDaysCount - i)
+      previousMonthDays.push({
+        date: prevMonthDaysCount - i,
+        isCurrentMonth: false,
+        isToday: isToday(date),
+        fullDate: date,
+        bookings: getBookingsForDate(formatDateString(date)),
+      })
+    }
+  }
 
-      return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
-    },
-    groupedBookings() {
-      const grouped = {};
+  // Current month days
+  const currentMonthDays = []
+  for (let i = 1; i <= daysInMonth; i++) {
+    const date = new Date(year, month, i)
+    currentMonthDays.push({
+      date: i,
+      isCurrentMonth: true,
+      isToday: isToday(date),
+      fullDate: date,
+      bookings: getBookingsForDate(formatDateString(date)),
+    })
+  }
 
-      this.bookings.forEach((booking) => {
-        if (!grouped[booking.date]) {
-          grouped[booking.date] = [];
-        }
-        grouped[booking.date].push(booking);
-      });
+  // Next month days to fill the last week
+  const nextMonthDays = []
+  const totalDays = previousMonthDays.length + currentMonthDays.length
+  const remainingDays = 42 - totalDays // 6 rows of 7 days
 
-      // Sort by date
-      return Object.keys(grouped)
-        .sort()
-        .reduce((obj, key) => {
-          obj[key] = grouped[key];
-          return obj;
-        }, {});
-    },
-  },
-  methods: {
-    formatDateString(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    },
-    getBookingsForDate(dateString) {
-      return this.bookings.filter((booking) => booking.date === dateString);
-    },
-    formatDate(dateString) {
-      const options = {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      };
-      return new Date(dateString).toLocaleDateString("en-US", options);
-    },
-    selectBooking(booking) {
-      this.selectedBooking = booking;
-    },
-    getBookingColorClass(status) {
-      switch (status) {
-        case "Confirmed":
-          return "bg-green-100 text-green-800";
-        case "Pending":
-          return "bg-yellow-100 text-yellow-800";
-        case "Completed":
-          return "bg-blue-100 text-blue-800";
-        case "Cancelled":
-          return "bg-red-100 text-red-800";
-        default:
-          return "bg-gray-100 text-gray-800";
-      }
-    },
-    getStatusBadgeClass(status) {
-      switch (status) {
-        case "Confirmed":
-          return "bg-green-100 text-green-800";
-        case "Pending":
-          return "bg-yellow-100 text-yellow-800";
-        case "Completed":
-          return "bg-blue-100 text-blue-800";
-        case "Cancelled":
-          return "bg-red-100 text-red-800";
-        default:
-          return "bg-gray-100 text-gray-800";
-      }
-    },
-  },
-};
+  for (let i = 1; i <= remainingDays; i++) {
+    const date = new Date(year, month + 1, i)
+    nextMonthDays.push({
+      date: i,
+      isCurrentMonth: false,
+      isToday: isToday(date),
+      fullDate: date,
+      bookings: getBookingsForDate(formatDateString(date)),
+    })
+  }
+
+  return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays]
+})
+
+const groupedBookings = computed(() => {
+  const grouped = {}
+
+  bookings.value.forEach((booking) => {
+    if (!grouped[booking.date]) {
+      grouped[booking.bookingDate] = []
+    }
+    grouped[booking.bookingDate].push(booking)
+  })
+
+  // Sort by date
+  return Object.keys(grouped)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = grouped[key]
+      return obj
+    }, {})
+})
+
+const formatDateString = (date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+const getBookingsForDate = (dateString) => {
+  return bookings.value.filter((booking) => booking.bookingDate === dateString)
+}
+
+const formatDate = (dateString) => {
+  const options = {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }
+  return new Date(dateString).toLocaleDateString("en-US", options)
+}
+
+const selectBooking = (booking) => {
+  selectedBooking.value = booking
+}
+
+const getBookingColorClass = (status) => {
+  switch (status) {
+    case "Confirmed":
+      return "bg-green-100 text-green-800"
+    case "Pending":
+      return "bg-yellow-100 text-yellow-800"
+    case "Completed":
+      return "bg-blue-100 text-blue-800"
+    case "Cancelled":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
+
+const getStatusBadgeClass = (status) => {
+  switch (status) {
+    case "Confirmed":
+      return "bg-green-100 text-green-800"
+    case "Pending":
+      return "bg-yellow-100 text-yellow-800"
+    case "Completed":
+      return "bg-blue-100 text-blue-800"
+    case "Cancelled":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
 </script>

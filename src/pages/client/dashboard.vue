@@ -949,13 +949,13 @@ const jobs = ref([
 
 const recentActivity = ref([
   {
-    name: "Emily Johnson",
+    name: "Emily Njoki",
     avatar: "https://randomuser.me/api/portraits/women/45.jpg",
     action: 'applied to your job "After-School Nanny for 2 Children"',
     time: "2 hours ago",
   },
   {
-    name: "Michael Smith", 
+    name: "Michael Mwangi", 
     avatar: "https://randomuser.me/api/portraits/men/22.jpg",
     action: 'sent you a message about "Weekend Babysitter Needed"',
     time: "Yesterday",
@@ -1001,10 +1001,7 @@ const removeChild = (index) => {
 }
 
 const submitJob = () => {
-  // Here you would typically send the job data to your backend
-  console.log("Submitting job:", newJob)
 
-  // For demo purposes, add the job to the list
   const newJobId = jobs.value.length + 1
   const jobToAdd = {
     id: newJobId,

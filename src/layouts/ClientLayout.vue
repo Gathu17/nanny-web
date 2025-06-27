@@ -342,28 +342,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      mobileMenuOpen: false,
-      profileMenuOpen: false,
-    };
-  },
-  methods: {
-    logout() {
-      // Implement logout functionality
-      console.log("Logging out...");
-      // Redirect to login page or home page
-      // this.$router.push('/');
-    },
-  },
-  watch: {
-    $route() {
-      // Close mobile menu when route changes
-      this.mobileMenuOpen = false;
-      this.profileMenuOpen = false;
-    },
-  },
-};
+<script setup>
+import { ref, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import {useAuthStore} from "@/stores/auth"
+
+const mobileMenuOpen = ref(false)
+const profileMenuOpen = ref(false)
+const authStore = useAuthStore();
+
+const router = useRouter()
+const route = useRoute()
+
+function logout() {
+  authStore.logout()
+  router.push('/auth/login');
+}
+
+watch(
+  () => route.fullPath,
+  () => {
+    // Close mobile menu when route changes
+    mobileMenuOpen.value = false
+    profileMenuOpen.value = false
+  }
+)
 </script>

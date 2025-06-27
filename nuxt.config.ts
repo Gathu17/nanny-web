@@ -2,11 +2,24 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  css: ['~/assets/main.css'],
-
-  plugins: [
-    {src: "@/plugins/fontawesome", ssr: false}
+  modules: [
+    "@pinia/nuxt",
+    [
+      "@vee-validate/nuxt",
+      {
+        autoImports: true,
+      },
+    ],
+    "pinia-plugin-persistedstate/nuxt",
   ],
+
+  pinia: {
+    autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+  },
+
+  css: ["~/assets/main.css"],
+
+  plugins: [{ src: "@/plugins/fontawesome", ssr: false }],
 
   components: [
     { path: "~/components/presentational", global: true },
@@ -22,9 +35,6 @@ export default defineNuxtConfig({
 
   srcDir: "src/",
 
-  // router: {
-  //   middleware: 'redirect',
-  // },
   routeRules: {
     "/": {
       redirect: "/welcome",
@@ -33,6 +43,12 @@ export default defineNuxtConfig({
       redirect: "/welcome",
     },
   },
+
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.API_URL || "http://localhost:3000/api",
+    },
+  },
   ssr: false,
-  compatibilityDate: "2024-11-21"
-})
+  compatibilityDate: "2024-11-21",
+});

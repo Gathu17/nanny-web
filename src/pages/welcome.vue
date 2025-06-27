@@ -1,126 +1,222 @@
 <template>
   <NuxtLayout name="guest-layout">
-    <div class="relative w-[100vw]">
-      <img src="@/assets/images/hero-img.jpg" class="w-[100vw] opacity-85" />
-      <div class="absolute bottom-20 lg:bottom-30 xl:bottom-40 left-1 lg:left-10  flex sm:right-2">
-        <button
-          class="relative w-[12rem] h-[50px] sm:w-[200px] font-bold mx-3 bg-pink hover:bg-pink/80"
-        >
-          Find Child Care
-        </button>
-        <button
-          class="relative h-[50px] w-[8rem] sm:w-[200px] font-bold bg-gray-200 hover:bg-gray-300"
-        >
-          I am a sitter
-        </button>
-      </div>
-      <div class="mx-15 mb-5 top-[90%] z-10 absolute flex overflow-x-auto w-[100vw]">
-        <div class="flex-1  min-w-[200px] h-[18rem] bg-white mx-10 shadow-md p-2">
-          <img src="@/assets/images/train.jpg" class="w-[100px] mx-auto" />
-          <h1 class="font-bold text-center text-xl">Babysitter</h1>
-          <p>Occasional support for last-minute needs, date nights and more</p>
-        </div>
-        <div class="flex-1 min-w-[200px] h-[18rem] bg-white mx-10 shadow-md p-2">
-          <img src="@/assets/images/stroller.jpg" class="w-[100px] mx-auto" />
-          <h1 class="font-bold text-center text-xl">Nanny</h1>
-          <p>Regular support on weekdays, weekends and after-school hours.</p>
-        </div>
-        <div class=" flex-1 min-w-[200px] h-[18rem] bg-white mx-10 shadow-md p-2">
-          <img src="@/assets/images/special.jpg" class="w-[100px] mx-auto" />
-          <h1 class="font-bold text-center text-xl">Specialized Care</h1>
-          <p>Specialized care to meet the individual needs of your child</p>
+    <div class="relative w-[100vw] overflow-hidden">
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60 z-10"
+      ></div>
+      <img
+        src="@/assets/images/hero-img.jpg"
+        class="w-[100vw] h-[90vh] object-cover"
+      />
+      <div
+        class="absolute inset-0 flex flex-col justify-center items-center z-20 text-white"
+      >
+        <h1 class="text-5xl md:text-6xl font-bold mb-8 text-center px-4">
+          Find Your Perfect Child Care
+        </h1>
+        <p class="text-xl md:text-2xl mb-12 text-center px-4">
+          Connecting families with trusted caregivers in Kenya
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            class="px-8 py-4 bg-[#FF6B6B] hover:bg-[#FF5252] text-white font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            Find Child Care
+          </button>
+          <button
+            class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-bold rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
+          >
+            I am a Nanny
+          </button>
         </div>
       </div>
     </div>
-    <div class="mt-[20rem]">
-      <div class="mb-[2rem]">
-        <h2 class="font-lato font-bold text-2xl text-center">
-          Tap into the <span class="sketchy-bg">largest online network</span> in
-          Kenya for finding caregivers.
+
+    <div class="py-20 bg-gradient-to-b from-white to-[#FFF5F5]">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-16">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300"
+          >
+            <img
+              src="@/assets/images/train.jpg"
+              class="w-32 h-32 mx-auto mb-6 rounded-full object-cover"
+            />
+            <h3 class="font-bold text-2xl text-center mb-4 text-[#FF6B6B]">
+              Babysitter
+            </h3>
+            <p class="text-gray-600 text-center">
+              Occasional support for last-minute needs, date nights and more
+            </p>
+          </div>
+          <div
+            class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300"
+          >
+            <img
+              src="@/assets/images/stroller.jpg"
+              class="w-32 h-32 mx-auto mb-6 rounded-full object-cover"
+            />
+            <h3 class="font-bold text-2xl text-center mb-4 text-[#FF6B6B]">
+              Nanny
+            </h3>
+            <p class="text-gray-600 text-center">
+              Regular support on weekdays, weekends and after-school hours.
+            </p>
+          </div>
+          <div
+            class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300"
+          >
+            <img
+              src="@/assets/images/special.jpg"
+              class="w-32 h-32 mx-auto mb-6 rounded-full object-cover"
+            />
+            <h3 class="font-bold text-2xl text-center mb-4 text-[#FF6B6B]">
+              Specialized Care
+            </h3>
+            <p class="text-gray-600 text-center">
+              Specialized care to meet the individual needs of your child
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-20 bg-[#FFF5F5]">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-16">
+          Tap into the
+          <span class="text-[#FF6B6B]">largest online network</span> in Kenya
         </h2>
-        <ul>
-          <li class="flex mt-6 md:ml-16 ml-2">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div class="bg-white rounded-xl p-6 shadow-lg">
             <font-awesome-icon
               :icon="['fas', 'shield-halved']"
-              class="w-[30px] mr-5 ml-10"
-            />100% of the caregivers are background checked before you can hire
-          </li>
-          <li class="flex mt-6 md:ml-16 ml-2">
+              class="w-12 h-12 text-[#FF6B6B] mb-4"
+            />
+            <p class="text-lg">
+              100% of the caregivers are background checked before you can hire
+            </p>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
             <font-awesome-icon
               :icon="['fas', 'address-card']"
-              class="w-[30px] mr-5 ml-10"
-            />Transparent profiles, ratings and reviews.
-          </li>
-          <li class="flex mt-6 md:ml-16 ml-2">
+              class="w-12 h-12 text-[#FF6B6B] mb-4"
+            />
+            <p class="text-lg">Transparent profiles, ratings and reviews</p>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
             <font-awesome-icon
               :icon="['fas', 'phone-volume']"
-              class="w-[30px] mr-5 ml-10"
+              class="w-12 h-12 text-[#FF6B6B] mb-4"
             />
-            Dedicated safety and support teams
-          </li>
-        </ul>
+            <p class="text-lg">Dedicated safety and support teams</p>
+          </div>
+        </div>
       </div>
-      <div class="bg-pink h-[40rem] flex">
-        <img src="@/assets/images/hero-img2.jpg" class="h-full w-1/2 md-block lg:block aspect-square hidden"/>
-        <div class="flex-1 p-5">
-          <h1 class="text-center text-4xl font-caponi mb-5">We make finding the right care easier</h1>
-          <ul>
-            <li class="flex items-center text-2xl mb-3 p-2">
-              <font-awesome-icon
-              :icon="['far', 'square-check']"
-              class="w-[30px] mr-5 ml-10"
-            />
-            Trusted and verified nannies with detailed profiles and reviews
+    </div>
+
+    <div class="bg-gradient-to-r from-[#FF6B6B] to-[#FF8E8E] py-20">
+      <div
+        class="container mx-auto px-4 flex flex-col md:flex-row items-center"
+      >
+        <img
+          src="@/assets/images/hero-img2.jpg"
+          class="w-full md:w-1/2 rounded-2xl shadow-2xl mb-8 md:mb-0 md:mr-12"
+        />
+        <div class="text-white">
+          <h2 class="text-4xl font-bold mb-8">
+            We make finding the right care easier
+          </h2>
+          <ul class="space-y-6">
+            <li class="flex items-center text-xl">
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
+              Trusted and verified nannies with detailed profiles and reviews
             </li>
-            <li class="flex items-center text-2xl mb-3 p-2">
-              <font-awesome-icon
-              :icon="['far', 'square-check']"
-              class="w-[30px] mr-5 ml-10"
-            />
-            Flexible scheduling to fit your family's needs
+            <li class="flex items-center text-xl">
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
+              Flexible scheduling to fit your family's needs
             </li>
-            <li class="flex items-center text-2xl mb-3 p-2">
-              <font-awesome-icon
-              :icon="['far', 'square-check']"
-              class="w-[30px] mr-5 ml-10"
-            />
-            Care options for all ages, from infants to toddlers
+            <li class="flex items-center text-xl">
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
+              Care options for all ages, from infants to toddlers
             </li>
-            <li class="flex items-center text-2xl mb-3 p-2">
-              <font-awesome-icon
-              :icon="['far', 'square-check']"
-              class="w-[30px] mr-5 ml-10"
-            />
-            24/7 customer support to assist with your care needs
+            <li class="flex items-center text-xl">
+              <span class="flex items-center justify-center w-8 h-8 mr-4">
+                <font-awesome-icon
+                  :icon="['far', 'square-check']"
+                  class="!w-8 !h-8"
+                  style="font-size: 2rem;"
+                  fixed-width
+                />
+              </span>
+              24/7 customer support to assist with your care needs
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="relative md:w-[70vw] mx-auto bg-lime-50 h-[40vh] mt-28 xl:mt-30 mb-24 w-full">
-      <img src="@/assets/images/chats.png" class="md:w-[15vw] w-[40vw] mx-auto absolute md:left-40 left-5 xl:left-50 xl:-top-20"/>
-      <div class="float-right md:mr-10  w-[50%] mt-10">
-        <p class="text-3xl font-bold sm:text-xl">Find the care you need from someone you trust</p> 
-        <div class="flex">
-          <button class="bg-pink mt-10 p-4 mr-4">Post a Job</button>
-          <button class="border b-3 mt-10 p-4 sm:mr-2">I'm a Nanny</button>
+
+    <div class="relative bg-gradient-to-br from-[#FFF5F5] to-white py-20">
+      <div class="container mx-auto px-4">
+        <div class="bg-white rounded-2xl shadow-xl pb-40 pt-5 relative overflow-hidden flex">
+          <div class="relative w-full h-48 flex justify-center">
+            <img
+              src="@/assets/images/chats.png"
+              class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 md:w-48 object-contain "
+            />
+          </div>
+          <div class="text-center mt-8 ">
+            <h2 class="text-4xl font-bold mb-8">
+              Find the care you need from someone you trust
+            </h2>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+              <button
+                class="px-8 py-4 bg-[#FF6B6B] hover:bg-[#FF5252] text-white font-bold rounded-full transition-all duration-300"
+                @click="() => $router.push()"
+              >
+                Find Child Care
+              </button>
+              <button
+                class="px-8 py-4 border-2 border-[#FF6B6B] text-[#FF6B6B] hover:bg-[#FF6B6B] hover:text-white font-bold rounded-full transition-all duration-300"
+              >
+                I'm a Nanny
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <Footer/>
+    <Footer />
   </NuxtLayout>
 </template>
+
 <script lang="ts" setup></script>
+
 <style scoped>
-.sketchy-bg {
-  background: repeating-linear-gradient(
-    135deg,
-    #f0e4d7,
-    #f0e4d7 4px,
-    #ffccd5 5px,
-    /* Light pink */ #ffccd5 9px
-  );
-  border-radius: 5px;
-  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1), -2px -2px 0px rgba(0, 0, 0, 0.1);
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
 }
 </style>
